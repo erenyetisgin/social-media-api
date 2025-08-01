@@ -11,3 +11,14 @@ db.once("open", () => console.log("Connected to DB."));
 app.listen(process.env.PORT, () =>
   console.log(`Server has started on port ${process.env.PORT}.`)
 );
+
+app.use(express.json());
+
+const postsRouter = require("./routes/posts");
+app.use("/posts", postsRouter);
+
+const usersRouter = require("./routes/users");
+app.use("/users", usersRouter);
+
+const followsRouter = require("./routes/follows");
+app.use("/follows", followsRouter);
