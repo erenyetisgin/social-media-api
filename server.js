@@ -8,17 +8,20 @@ const db = mongoose.connection;
 db.on("error", (error) => console.log(error));
 db.once("open", () => console.log("Connected to DB."));
 
-app.listen(process.env.PORT, () =>
-  console.log(`Server has started on port ${process.env.PORT}.`)
-);
-
 app.use(express.json());
 
-const postsRouter = require("./routes/posts");
-app.use("/posts", postsRouter);
+const postsRoutes = require("./routes/postRoutes");
+app.use("/posts", postsRoutes);
 
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/userRoutes");
 app.use("/users", usersRouter);
 
-const followsRouter = require("./routes/follows");
-app.use("/follows", followsRouter);
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({
+    message: "Internal Server Error",
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server has started on port ${PORT}.`));

@@ -21,4 +21,6 @@ const postSchema = mongoose.Schema({
   },
 });
 
+postSchema.index({ userId: 1, createdAt: -1 }); // Index for efficient querying by userId and creation date
+
 module.exports = mongoose.model("Post", postSchema);

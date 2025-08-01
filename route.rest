@@ -9,3 +9,7 @@ Content-Type: application/json
     "name": "Second User",
     "username": "second_user"
 }
+
+###
+
+GET http://localhost:3000/posts/688ca76253b13abd484a5d2a
