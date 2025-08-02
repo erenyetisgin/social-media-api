@@ -18,8 +18,11 @@ app.use("/users", usersRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);
-  res.status(500).json({
-    message: "Internal Server Error",
+  const statusCode = err.statusCode || 500;
+  const message =
+    err instanceof ApiError ? err.message : "Internal Server Error";
+  res.status(statusCode).json({
+    message: message,
   });
 });
 

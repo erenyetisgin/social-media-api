@@ -5,6 +5,26 @@ class PostService {
     return PostRepository.create({ userId, title, content });
   }
 
+  async updatePost(postId, data) {
+    const post = await PostRepository.getPostById(postId);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+    return PostRepository.update(postId, data);
+  }
+
+  async deletePost(postId) {
+    const post = await PostRepository.getPostById(postId);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+    return PostRepository.delete(postId);
+  }
+
+  async getPostById(postId) {
+    return PostRepository.getPostById(postId);
+  }
+
   async getPostsByUserId(userId, { cursor, pageSize }) {
     const posts = await PostRepository.findByUserId(userId, {
       cursor,
