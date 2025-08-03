@@ -36,7 +36,7 @@ exports.getPostById = async (req, res, next) => {
     const postId = req.params.id;
     const post = await postService.getPostById(postId);
     if (!post) {
-      return res.status(404).json({ message: "Post not found" });
+      throw new ApiError(404, "Post not found");
     }
     res.status(200).json(post);
   } catch (error) {

@@ -1,4 +1,5 @@
 const UserService = require("../services/UserService");
+const ApiError = require("../errors/ApiError");
 
 exports.createUser = async (req, res, next) => {
   try {
@@ -36,7 +37,7 @@ exports.getUserById = async (req, res, next) => {
     const userId = req.params.id;
     const user = await UserService.getUserById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throw new ApiError(404, "User not found");
     }
     res.status(200).json(user);
   } catch (error) {

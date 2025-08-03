@@ -1,16 +1,20 @@
 const UserRepository = require("../repositories/UserRepository");
 const PostRepository = require("../repositories/PostRepository");
+const ApiError = require("../errors/ApiError");
 
 class UserService {
   async createUser(data) {
-    // TODO: Check if user already exists
+    if (await UserRepository.findByUsername(data.username)) {
+      throw new ApiError(409, "Username already exists");
+    }
+
     return UserRepository.create(data);
   }
 
   async updateUser(userId, data) {
     const user = UserRepository.getUserById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new ApiError(404, "User not found");
     }
 
     user.name = data.name || user.name;
@@ -20,6 +24,11 @@ class UserService {
   }
 
   async deleteUser(userId) {
+    const user = await UserRepository.getUserById(userId);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
     // First, delete all posts by the user
     await PostRepository.deleteAllByUserId(userId);
 

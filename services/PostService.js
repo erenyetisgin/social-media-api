@@ -1,4 +1,5 @@
 const PostRepository = require("../repositories/PostRepository");
+const ApiError = require("../errors/ApiError");
 
 class PostService {
   async createPost(userId, title, content) {
@@ -8,7 +9,7 @@ class PostService {
   async updatePost(postId, data) {
     const post = await PostRepository.getPostById(postId);
     if (!post) {
-      throw new Error("Post not found");
+      throw new ApiError(404, "Post not found");
     }
     return PostRepository.update(postId, data);
   }
@@ -16,7 +17,7 @@ class PostService {
   async deletePost(postId) {
     const post = await PostRepository.getPostById(postId);
     if (!post) {
-      throw new Error("Post not found");
+      throw new ApiError("Post not found");
     }
     return PostRepository.delete(postId);
   }
