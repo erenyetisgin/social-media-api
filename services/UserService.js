@@ -12,9 +12,16 @@ class UserService {
   }
 
   async updateUser(userId, data) {
-    const user = UserRepository.getUserById(userId);
+    const user = await UserRepository.getUserById(userId);
     if (!user) {
       throw new ApiError(404, "User not found");
+    }
+
+    if (data.username && data.username !== user.username) {
+      const existingUser = await UserRepository.findByUsername(data.username);
+      if (existingUser) {
+        throw new ApiError(409, "Username already exists");
+      }
     }
 
     user.name = data.name || user.name;
