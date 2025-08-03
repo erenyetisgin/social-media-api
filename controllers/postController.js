@@ -1,9 +1,11 @@
-const postService = require("../services/PostService");
+const PostService = require("../services/PostService");
+const ApiError = require("../errors/ApiError");
 
 exports.createPost = async (req, res, next) => {
   try {
-    const postData = req.body;
-    const newPost = await postService.createPost(postData);
+    const { userId, title, content } = req.body;
+
+    const newPost = await PostService.createPost(userId, title, content);
     res.status(201).json(newPost);
   } catch (error) {
     next(error);
@@ -14,7 +16,7 @@ exports.updatePost = async (req, res, next) => {
   try {
     const postId = req.params.id;
     const postData = req.body;
-    const updatedPost = await postService.updatePost(postId, postData);
+    const updatedPost = await PostService.updatePost(postId, postData);
     res.status(200).json(updatedPost);
   } catch (error) {
     next(error);
@@ -24,7 +26,7 @@ exports.updatePost = async (req, res, next) => {
 exports.deletePost = async (req, res, next) => {
   try {
     const postId = req.params.id;
-    await postService.deletePost(postId);
+    await PostService.deletePost(postId);
     res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
     next(error);
@@ -34,7 +36,7 @@ exports.deletePost = async (req, res, next) => {
 exports.getPostById = async (req, res, next) => {
   try {
     const postId = req.params.id;
-    const post = await postService.getPostById(postId);
+    const post = await PostService.getPostById(postId);
     if (!post) {
       throw new ApiError(404, "Post not found");
     }
@@ -48,7 +50,7 @@ exports.getUserPosts = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const { cursor, pageSize } = req.query;
-    const posts = await postService.getPostsByUserId(userId, {
+    const posts = await PostService.getPostsByUserId(userId, {
       cursor: cursor ? new Date(cursor) : undefined,
       pageSize: parseInt(pageSize, 10) || 10,
     });

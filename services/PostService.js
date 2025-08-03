@@ -1,8 +1,15 @@
 const PostRepository = require("../repositories/PostRepository");
+const UserRepository = require("../repositories/UserRepository");
 const ApiError = require("../errors/ApiError");
 
 class PostService {
   async createPost(userId, title, content) {
+    // Check if the user exists
+    const user = await UserRepository.getUserById(userId);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
     return PostRepository.create({ userId, title, content });
   }
 
@@ -11,13 +18,17 @@ class PostService {
     if (!post) {
       throw new ApiError(404, "Post not found");
     }
-    return PostRepository.update(postId, data);
+
+    post.title = data.title || post.title;
+    post.content = data.content || post.content;
+
+    return PostRepository.update(postId, post);
   }
 
   async deletePost(postId) {
     const post = await PostRepository.getPostById(postId);
     if (!post) {
-      throw new ApiError("Post not found");
+      throw new ApiError(404, "Post not found");
     }
     return PostRepository.delete(postId);
   }
